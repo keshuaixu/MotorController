@@ -30,6 +30,8 @@ void setup(){
 	pinMode(9,OUTPUT);
 	pinMode(10,OUTPUT);
 	pinMode(11,OUTPUT);
+	pinMode(13,OUTPUT);
+	digitalWrite(13,LOW);
 
 	InitTimersSafe();      
 	SetPinFrequencySafe(10, 150);
@@ -41,6 +43,7 @@ void setup(){
 	m2.setPID(0.19,0.0085,0.02,0.0);
 
 	kc.setAcceleration(1000,1000,1000,1000);
+	kc.coast();
 }
 
 long lastHeartbeat = 0;
@@ -53,6 +56,8 @@ void loop(){
 	m2.run();
 
 	if ( millis()-lastHeartbeat > 5000 ){
+		kc.brake();
+		digitalWrite(13,HIGH);
 	}
 
 }
@@ -99,6 +104,7 @@ void receiveEvent(int howMany){
 	while (Wire.available() > 0){
 		Wire.read();
 		Serial.println("too many");
+		digitalWrite(13,HIGH);
 	}
 }
 
