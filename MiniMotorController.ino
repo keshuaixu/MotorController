@@ -17,7 +17,7 @@ long encoder2;
 RegulatedMotor m1(&encoder1,7,6,10);
 RegulatedMotor m2(&encoder2,8,11,9);
 
-KinematicController kc(&m1,&m2,1,-1,228,75,64*50);
+KinematicController kc(&m1,&m2,1,-1,225,75,64*50);
 
 void setup(){
 	Serial.begin(115200);
