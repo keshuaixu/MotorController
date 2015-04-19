@@ -126,6 +126,9 @@ void requestEvent(){
 		resp[6] = ccw >> 16;
 		resp[7] = ccw >> 24;
 		Wire.write(resp,8);
+		responseState = 0x00;
+	} else {
+		digitalWrite(13,HIGH);
 	}
 
 }
