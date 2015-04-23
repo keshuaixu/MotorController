@@ -58,6 +58,8 @@ void loop(){
 	if ( millis()-lastHeartbeat > 5000 ){
 		kc.brake();
 		digitalWrite(13,HIGH);
+	} else {
+		digitalWrite(13,LOW);
 	}
 
 }
@@ -66,11 +68,11 @@ void loop(){
 int responseState;
 
 void receiveEvent(int howMany){
+	lastHeartbeat = millis();
 	byte command = Wire.read();
 	uint16_t arg[16];
 	switch (command) {
 		case COMMAND_HEARTBEAT:
-			lastHeartbeat = millis();
 		break;
 		case COMMAND_SETACCELERATION:
 			for (int i = 0; i < 4; i++){
@@ -103,15 +105,15 @@ void receiveEvent(int howMany){
 	}
 	while (Wire.available() > 0){
 		Wire.read();
-		Serial.println("too many");
 		digitalWrite(13,HIGH);
 	}
 }
 
 void requestEvent(){
 	if (responseState == COMMAND_REPORTSTANDBY) {
-		byte resp = kc.isStandby()?0x01:0x00;
-		Wire.write(resp);
+		byte resp[1];
+		resp[0] = kc.isStandby()?0x01:0x00;
+		Wire.write(resp,1);
 		responseState = 0x00;
 	} else if (responseState == COMMAND_REPORTENCODER){
 		byte resp[8];
@@ -128,7 +130,6 @@ void requestEvent(){
 		Wire.write(resp,8);
 		responseState = 0x00;
 	} else {
-		digitalWrite(13,HIGH);
 	}
 
 }
