@@ -119,14 +119,14 @@ void requestEvent(){
 		byte resp[8];
 		int32_t fwd = kc.getOdometryForward();
 		int32_t ccw = kc.getOdometryCCW();
-		resp[0] = fwd;
-		resp[1] = fwd >> 8;
-		resp[2] = fwd >> 16;
-		resp[3] = fwd >> 24;
-		resp[4] = ccw;
-		resp[5] = ccw >> 8;
-		resp[6] = ccw >> 16;
-		resp[7] = ccw >> 24;
+		resp[0] = (int32_t) fwd;
+		resp[1] = (int32_t) fwd >> 8UL;
+		resp[2] = (int32_t) fwd >> 16UL;
+		resp[3] = (int32_t) fwd >> 24UL;
+		resp[4] = (int32_t) ccw;
+		resp[5] = (int32_t) ccw >> 8UL;
+		resp[6] = (int32_t) ccw >> 16UL;
+		resp[7] = (int32_t) ccw >> 24UL;
 		Wire.write(resp,8);
 		responseState = 0x00;
 	} else {
