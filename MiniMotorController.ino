@@ -100,6 +100,29 @@ void receiveEvent(int howMany){
 		case COMMAND_REPORTENCODER:
 			responseState = COMMAND_REPORTENCODER;
 		break;
+		case COMMAND_CALIBRATE:
+			for (int i = 0; i < 2; i++){
+				arg[i] = Wire.read();
+				arg[i] |= Wire.read() << 8;
+			}
+			kc.calibrate(arg[0],arg[1]);
+		break;
+		case COMMAND_GETGLOBALPOSITION:
+			responseState = COMMAND_GETGLOBALPOSITION;
+		break;
+		/*
+		case COMMAND_PID:
+			float floatArgs[4];
+			for (int i = 0; i < 4; i++){
+				floatArgs[i] = Wire.read();
+				floatArgs[i] |= Wire.read() << 8UL;
+				floatArgs[i] |= Wire.read() << 16UL;
+				floatArgs[i] |= Wire.read() << 24UL;
+			}
+			m1.setPID(floatArgs[0],floatArgs[1],floatArgs[2],floatArgs[3]);
+			m2.setPID(floatArgs[0],floatArgs[1],floatArgs[2],floatArgs[3]);
+		break;
+		*/
 		default:
 		break;
 	}
@@ -129,7 +152,23 @@ void requestEvent(){
 		resp[7] = (int32_t) ccw >> 24UL;
 		Wire.write(resp,8);
 		responseState = 0x00;
+	} else if (responseState == COMMAND_GETGLOBALPOSITION) {
+		byte resp[8];
+		int32_t x;
+		int32_t y;
+		kc.getGlobalPosition(&x, &y);
+		resp[0] = (int32_t) x;
+		resp[1] = (int32_t) x >> 8UL;
+		resp[2] = (int32_t) x >> 16UL;
+		resp[3] = (int32_t) x >> 24UL;
+		resp[4] = (int32_t) y;
+		resp[5] = (int32_t) y >> 8UL;
+		resp[6] = (int32_t) y >> 16UL;
+		resp[7] = (int32_t) y >> 24UL;
+		Wire.write(resp,8);
+		responseState = 0x00;		
 	} else {
+
 	}
 
 }
